@@ -1,11 +1,14 @@
 _user:
-  username: tomoya
-  password: $2a$10$KkUG107R3ASTHfAHei.bweXWXgCa4cE1KhK.F0odzfE0r97aeeTXC  # 这个密码要用 new BCryptPasswordEncoder().encode(newPassword) 算出，如果不会用，可以用默认的，程序启动了，修改即可
-  avatar: http://localhost:8080/static/images/upload/tomoya/avatar.png
-  email: py2qiuse@gmail.com
-  bio: hello world
-  url: https://tomoya92.github.io
+  username: admin
+  password: $2a$10$vXE/SbxHpRomeqgRnn1fa.O8sWirpEcYOyFQdFxZA1W7A26Xvn1X2   # 这个密码要用 new BCryptPasswordEncoder().encode(newPassword) 算出，如果不会用，可以用默认的，程序启动了，修改即可 123456
+  avatar: http://localhost:8080/static/images/upload/admin/avatar.png
+  email:
+  bio: 超级管理员
+  url:
   role: admin
+  node_id: 0
+  realname: 超级管理员
+  checked: true
 
 _roles:
   -
@@ -19,11 +22,11 @@ _roles:
       - topic:good
       - topic:list
       - topic:lock
-      - comment:edit
-      - comment:delete
-      - comment:list
+      - reply:edit
+      - reply:delete
+      - reply:list
       - user:list
-      - user:role
+      - user:edit
       - user:delete
       - user:block
       - user:unblock
@@ -41,6 +44,9 @@ _roles:
       - node:add
       - node:edit
       - node:delete
+      - check:list
+      - check:checkok
+      - check:checkno
   -
     name: banzhu
     description: 版主
@@ -52,9 +58,12 @@ _roles:
       - topic:good
       - topic:list
       - topic:lock
-      - comment:edit
-      - comment:delete
-      - comment:list
+      - reply:edit
+      - reply:delete
+      - reply:list
+      - check:list
+      - check:checkok
+      - check:checkno
   -
     name: user
     description: 会员
@@ -100,22 +109,22 @@ _permissions:
         description: 话题锁定
         url: /admin/topic/*/lock
   -
-    name: comment
-    description: 评论
+    name: reply
+    description: 回复
     url:
     childs:
       -
-        name: comment:edit
-        description: 评论编辑
-        url: /admin/comment/*/edit
+        name: reply:edit
+        description: 回复编辑
+        url: /admin/reply/*/edit
       -
-        name: comment:delete
-        description: 评论删除
-        url: /admin/comment/*/delete
+        name: reply:delete
+        description: 回复删除
+        url: /admin/reply/*/delete
       -
-        name: comment:list
-        description: 评论列表
-        url: /admin/comment/list
+        name: reply:list
+        description: 回复列表
+        url: /admin/reply/list
   -
     name: user
     description: 用户
@@ -126,9 +135,9 @@ _permissions:
         description: 用户列表
         url: /admin/user/list
       -
-        name: user:role
+        name: user:edit
         description: 用户角色
-        url: /admin/user/*/role
+        url: /admin/user/*/edit
       -
         name: user:delete
         description: 用户删除
@@ -217,3 +226,20 @@ _permissions:
         name: node:delete
         description: 删除版块
         url: /admin/node/*/delete
+  -
+    name: check
+    description: 注册审核
+    url:
+    childs:
+      -
+        name: check:list
+        description: 未审核用户列表
+        url: /admin/check/list
+      -
+        name: check:checkok
+        description: 审核
+        url: /admin/check/*/checkok
+      -
+        name: check:checkno
+        description: 拒绝
+        url: /admin/check/*/checkno

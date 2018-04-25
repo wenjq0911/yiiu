@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
   @Autowired
   private SiteConfig siteConfig;
 
+
   private HttpStatus getStatus(HttpServletRequest request) {
     Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
     if (statusCode == null) {

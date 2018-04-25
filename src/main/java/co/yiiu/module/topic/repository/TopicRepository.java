@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by tomoya.
@@ -26,7 +27,11 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 
   Page<Topic> findByGood(boolean b, Pageable pageable);
 
-  Page<Topic> findByCommentCount(int i, Pageable pageable);
+  Page<Topic> findAllByGoodAndNodeIsIn(boolean b, List<Node> nodes,Pageable pageable);
+
+  Page<Topic> findByReplyCount(int i, Pageable pageable);
+
+  Page<Topic> findByReplyCountAndNodeIsIn(int i, List<Node> nodes, Pageable pageable);
 
   Page<Topic> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);
 
@@ -38,5 +43,10 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 
   Page<Topic> findByNode(Node node, Pageable pageable);
 
+  Page<Topic> findByNodeIsIn(List<Node> node, Pageable pageable);
+
   long countByNode(Node node);
+
+  Page<Topic> findAllByNodeIsIn(List<Node> nodes,Pageable pageable);
+
 }

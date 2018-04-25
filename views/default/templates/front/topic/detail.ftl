@@ -24,7 +24,7 @@
                 <span class="label label-success">精华</span>
                 <span>•</span>
               </#if>
-              <span><a href="/user/${topic.user.username!}">${topic.user.username!}</a></span>
+              <span><a href="/user/${topic.user.username!}">${topic.user.realName!}</a></span>
               <span>•</span>
               <span>${model.formatDate(topic.inTime)}</span>
               <span>•</span>
@@ -92,51 +92,51 @@
       </#if>
       <#if sec.isAuthenticated()>
         <div class="panel-footer">
-          <a
-              href="javascript:window.open('http://service.weibo.com/share/share.php?url=${site.baseUrl!}/topic/${topic.id?c}?r=${sec.getPrincipal()!}&title=${topic.title!?html}', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');">分享微博</a>&nbsp;
+          <a href="javascript:window.open('http://service.weibo.com/share/share.php?url=${site.baseUrl!}/topic/${topic.id?c}?r=${sec.getPrincipal()!}&title=${topic.title!?html}', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');">分享微博</a>&nbsp;
           <#if collect??>
             <a href="/collect/${topic.id?c}/delete">取消收藏</a>
           <#else>
             <a href="/collect/${topic.id?c}/add">加入收藏</a>
           </#if>
           <span class="pull-right">${collectCount!0}个收藏</span>
+            &nbsp;<a href="http://wpa.qq.com/msgrd?v=3&uin=${topic.user.qq!}&site=qq&menu=yes" >QQ联系</a>&nbsp;
         </div>
       </#if>
     </div>
-    <#if topic.commentCount == 0 && topic.lock == false>
+    <#if topic.replyCount == 0 && topic.lock == false>
       <div class="panel panel-default">
-        <div class="panel-body text-center">目前暂无评论</div>
+        <div class="panel-body text-center">目前暂无回复</div>
       </div>
     <#else>
       <div class="panel panel-default">
-        <div class="panel-heading">${topic.commentCount!0} 条评论</div>
-        <div class="panel-body paginate-bot panel-body-comment">
+        <div class="panel-heading">${topic.replyCount!0} 条回复</div>
+        <div class="panel-body paginate-bot panel-body-reply">
           <#include "../components/replies.ftl"/>
-          <@comment id=topic.id topic_user=topic.user/>
+          <@reply id=topic.id topic_user=topic.user/>
         </div>
       </div>
     </#if>
     <#if sec.isAuthenticated()>
       <div class="panel panel-default">
         <#if topic.lock == true>
-          <div class="panel-body text-center">该话题目前已经被锁定，无法添加新评论。</div>
+          <div class="panel-body text-center">该话题目前已经被锁定，无法添加新回复。</div>
         <#else>
           <div class="panel-heading">
-            添加一条新评论
-            <small class="text-danger">这会<#if site.createCommentScore gte 0>增加<#else>扣除</#if>你${site.createCommentScore?abs}积分</small>
+            添加一条新回复
+            <small class="text-danger">这会<#if site.createReplyScore gte 0>增加<#else>扣除</#if>你${site.createReplyScore?abs}积分</small>
             <a href="javascript:;" id="goTop" class="pull-right">回到顶部</a>
           </div>
           <div class="panel-body">
             <#if !sec.isLock()>
-              <form action="/comment/save" method="post" id="editorForm">
+              <form action="/reply/save" method="post" id="editorForm">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <input type="hidden" value="${topic.id?c}" name="topicId"/>
                 <#include "../components/editor.ftl"/>
-                <@editor row=5 type="comment"/>
-                <button type="submit" class="btn btn-default">评论</button>
+                <@editor row=5 type="reply"/>
+                <button type="submit" class="btn btn-default">回复</button>
               </form>
             <#else>
-              <div class="text-center">你的帐户被禁用了，不能评论</div>
+              <div class="text-center">你的帐户被禁用了，不能回复</div>
             </#if>
           </div>
         </#if>

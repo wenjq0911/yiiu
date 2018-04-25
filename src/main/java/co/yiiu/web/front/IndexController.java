@@ -2,14 +2,18 @@ package co.yiiu.web.front;
 
 import co.yiiu.config.ScoreEventConfig;
 import co.yiiu.config.SiteConfig;
+import co.yiiu.config.data.DataConfig;
 import co.yiiu.core.base.BaseController;
 import co.yiiu.core.bean.Result;
 import co.yiiu.core.exception.ApiException;
-import co.yiiu.core.util.FreemarkerUtil;
-import co.yiiu.core.util.StrUtil;
+import co.yiiu.core.util.*;
 import co.yiiu.core.util.identicon.Identicon;
+import co.yiiu.module.attendance.model.Attendance;
+import co.yiiu.module.attendance.service.AttendanceService;
 import co.yiiu.module.code.model.CodeEnum;
 import co.yiiu.module.code.service.CodeService;
+import co.yiiu.module.node.model.Node;
+import co.yiiu.module.node.service.NodeService;
 import co.yiiu.module.score.model.ScoreEventEnum;
 import co.yiiu.module.score.model.ScoreLog;
 import co.yiiu.module.score.service.ScoreLogService;
@@ -20,19 +24,33 @@ import co.yiiu.module.topic.service.TopicSearch;
 import co.yiiu.module.user.model.User;
 import co.yiiu.module.user.service.UserService;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by tomoya.
@@ -60,9 +78,11 @@ public class IndexController extends BaseController {
   ScoreEventConfig scoreEventConfig;
   @Autowired
   ScoreLogService scoreLogService;
+  @Autowired
+  private NodeService nodeService;
 
   /**
-   * 首页
+   * 登录
    *
    * @return
    */
@@ -93,7 +113,9 @@ public class IndexController extends BaseController {
    */
   @GetMapping("/search")
   public String search(Integer p, String q, Model model) {
-    Page<Topic> page = topicSearch.search(p == null ? 1 : p, siteConfig.getPageSize(), q);
+    List<Integer> ids = getUser().getNodes().stream().map(Node::getId).collect(Collectors.toList());
+    List<Node> hasOpt = nodeService.findByIds(ids.toArray(new Integer[ids.size()]));
+    Page<Topic> page = topicSearch.search(p == null ? 1 : p, siteConfig.getPageSize(), q,hasOpt);
     model.addAttribute("page", page);
     model.addAttribute("q", q);
     return "front/search";
@@ -119,10 +141,11 @@ public class IndexController extends BaseController {
    * @return
    */
   @GetMapping("/register")
-  public String toRegister(HttpServletResponse response) {
+  public String toRegister(HttpServletResponse response, Model model) {
     if (getUser() != null) {
       return redirect(response, "/");
     }
+    model.addAttribute("nodes", nodeService.findByPid(0));
     return "front/register";
   }
 
@@ -135,7 +158,7 @@ public class IndexController extends BaseController {
    */
   @PostMapping("/register")
   @ResponseBody
-  public Result register(String username, String password, String email, String emailCode, String code,
+  public Result register(String username, String password, String email, String emailCode, String code,String desc,String realName,Integer nodeid,
                          HttpSession session) throws ApiException {
 
     String genCaptcha = (String) session.getAttribute("index_code");
@@ -175,7 +198,13 @@ public class IndexController extends BaseController {
     user.setAttempts(0);
     user.setScore(siteConfig.getScore());
     user.setSpaceSize(siteConfig.getUserUploadSpaceSize());
+    user.setRealName(realName);
 
+    Set<Node> nodes = new HashSet<>();
+    nodes.add(nodeService.findById(nodeid));
+    user.setNodes(nodes);
+    user.setChecked(false);
+    user.setCheckMsg(desc);
     // set user's role
     Role role = roleService.findByName(siteConfig.getNewUserRole());
     Set roles = new HashSet();
@@ -206,4 +235,13 @@ public class IndexController extends BaseController {
     return Result.success();
   }
 
+  /**
+   * 进入注册完成页面
+   *
+   * @return
+   */
+  @GetMapping("/registerok")
+  public String toRegisterOk(HttpServletResponse response, Model model) {
+    return "front/registerok";
+  }
 }

@@ -1,18 +1,21 @@
 package co.yiiu.web.admin;
 
 import co.yiiu.core.base.BaseController;
+import co.yiiu.core.bean.Result;
+import co.yiiu.core.exception.ApiException;
 import co.yiiu.module.node.model.Node;
 import co.yiiu.module.node.service.NodeService;
 import co.yiiu.module.topic.service.TopicService;
+import co.yiiu.module.user.model.User;
+import co.yiiu.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class NodeAdminController extends BaseController {
   private NodeService nodeService;
   @Autowired
   private TopicService topicService;
+  @Autowired
+  private UserService userService;
 
   @GetMapping("/list")
   public String list(Model model, Integer pid) {
@@ -59,7 +64,13 @@ public class NodeAdminController extends BaseController {
     node.setIntro(intro);
     node.setInTime(new Date());
     nodeService.save(node);
-    if (pid == 0) pid = node.getId();
+    if (pid == 0){
+      //给系统管理员添加权限
+      User user = getUser();
+      user.getNodes().add(node);
+      userService.save(user);
+      pid = node.getId();
+    }
     return redirect("/admin/node/list?pid=" + pid);
   }
 
@@ -86,7 +97,7 @@ public class NodeAdminController extends BaseController {
   public String delete(@PathVariable int id, HttpServletResponse response) throws Exception {
     nodeService.clearCache();// 缓存导致展示列表后，再用id查询node信息的时候会返回一个集合，所以在查询之前先清一下node的缓存
     Node node = nodeService.findById(id);
-    if (node.getTopicCount() > 0) throw new Exception("这个节点下还有话题，不能删除");
+    if (node.getTopicCount() > 0) throw new Exception("这个模块下还有话题，不能删除");
 
     int pid = node.getPid();
     nodeService.deleteById(id);
@@ -99,8 +110,7 @@ public class NodeAdminController extends BaseController {
   }
 
   /**
-   * 对节点下的话题数进行校正
-   *
+   * 对模块下的话题数进行校正
    * @param response
    * @return
    */
@@ -121,5 +131,47 @@ public class NodeAdminController extends BaseController {
       nodeService.save(pNode);
     });
     return redirect(response, "/admin/node/list");
+  }
+
+
+  /**
+   * 查询当前用户未读的消息数量
+   *
+   * @return
+   */
+  @GetMapping("/getPie")
+  @ResponseBody
+  public Result notRead() throws ApiException {
+    List<pieData> list = new ArrayList<pieData>();
+    nodeService.findByPid(0).stream().forEach(x->{
+      list.add(new pieData(x.getName(),x.getTopicCount()));
+    });
+    return Result.success(list);
+  }
+
+  class pieData{
+    private String name;
+    private Integer value;
+
+    public  pieData(String name,Integer value){
+      this.name=name;
+      this.value=value;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public Integer getValue() {
+      return value;
+    }
+
+    public void setValue(Integer value) {
+      this.value = value;
+    }
   }
 }

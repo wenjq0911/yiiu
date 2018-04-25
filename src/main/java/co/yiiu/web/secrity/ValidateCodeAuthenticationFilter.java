@@ -1,8 +1,11 @@
 package co.yiiu.web.secrity;
 
 import co.yiiu.config.SiteConfig;
+import co.yiiu.core.base.BaseController;
 import co.yiiu.module.user.model.User;
 import co.yiiu.module.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -28,6 +31,7 @@ public class ValidateCodeAuthenticationFilter extends UsernamePasswordAuthentica
   private SiteConfig siteConfig;
   @Autowired
   private UserService userService;
+  protected final static Logger logger = LoggerFactory.getLogger(ValidateCodeAuthenticationFilter.class);
 
   @Autowired
   private PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
@@ -56,7 +60,7 @@ public class ValidateCodeAuthenticationFilter extends UsernamePasswordAuthentica
 
     // 判断登陆次数及上限时间
     String username = obtainUsername(request);
-    User user = userService.findByUsername(username);
+    User user = userService.findByUsernameAndChecked(username,true);
     if (user == null) {
       throw new AuthenticationServiceException("用户名或密码错误!");
     } else {
@@ -75,6 +79,9 @@ public class ValidateCodeAuthenticationFilter extends UsernamePasswordAuthentica
         }
       }
     }
+    String p = new BCryptPasswordEncoder().encode("123456");
+    String pp=user.getPassword();
+    String ppp=obtainPassword(request);
     // 验证密码是否正确
     if (new BCryptPasswordEncoder().matches(obtainPassword(request), user.getPassword())) {
       user.setAttempts(0);

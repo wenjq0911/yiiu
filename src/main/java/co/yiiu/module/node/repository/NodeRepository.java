@@ -23,4 +23,8 @@ public interface NodeRepository extends JpaRepository<Node, Integer> {
   Node findByValue(String value);
 
   void deleteByPid(Integer pid);
+
+  List<Node> findNodesByPidIn(Integer[] ids);
+
+  List<Node> findNodesByIdIn(Integer[] ids);
 }

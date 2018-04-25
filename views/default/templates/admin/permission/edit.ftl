@@ -16,7 +16,7 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="hidden" name="id" value="${permission.id!}"/>
             <div class="form-group">
-              <label for="pid">父节点</label>
+              <label for="pid">业务系统</label>
               <select name="pid" id="pid" class="form-control">
                 <#list permissions as permission>
                   <option value="${permission.id!}">${permission.description!}</option>

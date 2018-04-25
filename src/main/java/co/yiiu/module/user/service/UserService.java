@@ -1,17 +1,20 @@
 package co.yiiu.module.user.service;
 
+import co.yiiu.module.node.model.Node;
+import co.yiiu.module.node.repository.NodeRepository;
 import co.yiiu.module.user.model.User;
 import co.yiiu.module.user.repository.UserRepository;
+import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by tomoya.
@@ -25,7 +28,8 @@ public class UserService {
 
   @Autowired
   private UserRepository userRepository;
-
+  @Autowired
+  private NodeRepository nodeRepository;
   /**
    * search user by score desc
    *
@@ -56,6 +60,13 @@ public class UserService {
     return userRepository.findByUsername(username);
   }
 
+  public User findByUsernameAndChecked(String username,boolean checked) {
+    return userRepository.findByUsernameAndChecked(username,checked);
+  }
+  public User findByRealName(String realName){
+    return userRepository.findByRealName(realName);
+  }
+
   @Cacheable
   public User findByEmail(String email) {
     return userRepository.findByEmail(email);
@@ -66,6 +77,13 @@ public class UserService {
     userRepository.save(user);
   }
 
+  @CacheEvict(allEntries = true)
+  public void saveAll(List<User> users){
+    for (User u:users
+         ) {
+      userRepository.save(u);
+    }
+  }
   /**
    * 分页查询用户列表
    *
@@ -74,12 +92,21 @@ public class UserService {
    * @return
    */
   @Cacheable
-  public Page<User> pageUser(int p, int size) {
+  public Page<User> pageUser(int p, int size,Integer pid,boolean checked) {
     Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "inTime"));
     Pageable pageable = new PageRequest(p - 1, size, sort);
-    return userRepository.findAll(pageable);
+    if(pid==null)
+      return userRepository.findByChecked(checked,pageable);
+    Node node = nodeRepository.findOne(pid);
+    return userRepository.findUsersByNodesAndChecked(node,pageable,checked);
   }
-
+  public Page<User> pageUser(int p, int size, Set<Node> nodes, boolean checked) {
+    Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "inTime"));
+    Pageable pageable = new PageRequest(p - 1, size, sort);
+    if(nodes==null)
+      return userRepository.findByChecked(checked,pageable);
+    return userRepository.findUsersByNodesAndChecked(nodes,pageable,checked);
+  }
   /**
    * 禁用用户
    *
@@ -120,20 +147,10 @@ public class UserService {
    * 注：这会删除用户的所有记录，慎重操作
    * @param id
    */
-  //TODO 关联太多，不提供删除用户操作
   //@CacheEvict(allEntries = true)
-//    public void deleteById(int id) {
-//        User user = findById(id);
-//        //删除用户的收藏
-//        collectService.deleteByUser(user);
-//        //删除用户发的所有评论
-//        commentService.deleteByUser(user);
-//        //删除用户的通知
-//        notificationService.deleteByUser(user);
-//        notificationService.deleteByTargetUser(user);
-//        //删除该用户的所有话题
-//        topicService.deleteByUser(user);
-//        //删除用户
-//        userDao.deleteById(id);
-//    }
+    public void deleteById(int id) {
+        User user = findById(id);
+        userRepository.deleteById(id);
+    }
+
 }

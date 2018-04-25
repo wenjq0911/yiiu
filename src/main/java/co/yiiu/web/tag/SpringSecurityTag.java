@@ -113,7 +113,18 @@ public class SpringSecurityTag {
       return null;
     }
   }
-
+  /**
+   * Gets the user name of the user from the Authentication object
+   *
+   * @return the user name as string
+   */
+  public String getUserName() {
+    String username = getPrincipal();
+    if (username != null) {
+      return userService.findByUsername(username).getRealName();
+    }
+    return null;
+  }
   /**
    * Is the user granted all of the grantedAuthorities passed in
    *

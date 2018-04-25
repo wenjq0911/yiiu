@@ -5,13 +5,13 @@
       <a href="/admin/index" class="list-group-item <#if page_tab == "index">active</#if>">仪表盘</a>
     </#if>
     <#if sec.allGranted("node:list")>
-      <a href="/admin/node/list" class="list-group-item <#if page_tab == "node">active</#if>">节点管理</a>
+      <a href="/admin/node/list" class="list-group-item <#if page_tab == "node">active</#if>">模块管理</a>
     </#if>
     <#if sec.allGranted("topic:list")>
       <a href="/admin/topic/list" class="list-group-item <#if page_tab == "topic">active</#if>">话题管理</a>
     </#if>
-    <#if sec.allGranted("comment:list")>
-      <a href="/admin/comment/list" class="list-group-item <#if page_tab == "comment">active</#if>">评论管理</a>
+    <#if sec.allGranted("reply:list")>
+      <a href="/admin/reply/list" class="list-group-item <#if page_tab == "reply">active</#if>">回复管理</a>
     </#if>
     <#if sec.allGranted("user:list")>
       <a href="/admin/user/list" class="list-group-item <#if page_tab == "user">active</#if>">用户管理</a>
@@ -25,6 +25,15 @@
     <#if sec.allGranted("index:all") || sec.allGranted("index:deleteAll")>
       <a href="/admin/indexed" class="list-group-item <#if page_tab == "indexed">active</#if>">索引管理</a>
     </#if>
+      <#if sec.allGranted("check:list")>
+      <a href="/admin/check/list" class="list-group-item <#if page_tab == "check">active</#if>">注册审核</a>
+      </#if>
+      <a href="#" class="list-group-item">&nbsp;</a>
+      <a href="#" class="list-group-item list-group-item-border-none">&nbsp;</a>
+      <a href="#" class="list-group-item list-group-item-border-none">&nbsp;</a>
+      <a href="#" class="list-group-item list-group-item-border-none">&nbsp;</a>
+      <a href="#" class="list-group-item list-group-item-border-none">&nbsp;</a>
+
   </div>
 </div>
 </#macro>

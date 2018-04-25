@@ -109,7 +109,6 @@ public class CollectService {
 
   /**
    * 话题被删除了，删除对应的所有收藏记录
-   *
    * @param topic
    */
   @CacheEvict(allEntries = true)

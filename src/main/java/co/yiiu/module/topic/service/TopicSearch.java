@@ -1,5 +1,6 @@
 package co.yiiu.module.topic.service;
 
+import co.yiiu.module.node.model.Node;
 import co.yiiu.module.topic.model.Topic;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
@@ -9,6 +10,7 @@ import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.MustJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -39,7 +42,7 @@ public class TopicSearch {
   @PersistenceContext
   private EntityManager entityManager;
 
-  public Page<Topic> search(int p, int size, String text) {
+  public Page<Topic> search(int p, int size, String text,List<Node> nodes) {
 
     // get the full text entity manager
     FullTextEntityManager fullTextEntityManager =
@@ -52,36 +55,41 @@ public class TopicSearch {
             .buildQueryBuilder().forEntity(Topic.class).get();
 
     // a very basic query by keywords
-    org.apache.lucene.search.Query query =
-        queryBuilder
+    //must true
+    MustJunction term = queryBuilder.bool().must(queryBuilder
             .keyword()
             .onFields("title", "content")
             .matching(text)
-            .createQuery();
+            .createQuery());
+
 
     // wrap Lucene query in an Hibernate Query object
     org.hibernate.search.jpa.FullTextQuery jpaQuery =
-        fullTextEntityManager.createFullTextQuery(query, Topic.class);
+        fullTextEntityManager.createFullTextQuery(term.createQuery(), Topic.class);
 
     // execute search and return results (sorted by relevance as default)
     jpaQuery.setFirstResult((p - 1) * size);
     jpaQuery.setMaxResults(size);
+
     Pageable pageable = new PageRequest(p - 1, size);
     List results = jpaQuery.getResultList();
 
-    results = hightLight(query, results, "title", "content");
+    results = hightLight(term.createQuery(), results,nodes, "title", "content");
 
     return new PageImpl(results, pageable, jpaQuery.getResultSize());
   }
 
-  public static List<Topic> hightLight(Query query, List<Topic> data, String... fields) {
+  public static List<Topic> hightLight(Query query, List<Topic> data,List<Node> nodes ,String... fields) {
     List<Topic> result = new ArrayList<>();
+    List<Integer> ids = nodes.stream().map(Node::getId).collect(Collectors.toList());
+
     SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<span class='text-danger'>", "</span>");
     QueryScorer queryScorer = new QueryScorer(query);
     Highlighter highlighter = new Highlighter(formatter, queryScorer);
     // 使用IK中文分词
     Analyzer analyzer = new SmartChineseAnalyzer();
     for (Topic _topic : data) {
+      if(!ids.contains(_topic.getId())) continue;
       Topic newTopic = new Topic();
       BeanUtils.copyProperties(_topic, newTopic);
       // 构建新的对象进行返回，避免页面错乱（我的页面有错乱）

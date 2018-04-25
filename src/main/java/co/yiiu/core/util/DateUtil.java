@@ -113,4 +113,19 @@ public class DateUtil {
     return calendar.getTime();
   }
 
+  /***
+   * 日期月份减一个月
+   *
+   * @param date
+   *            日期
+   * @return
+   */
+  public static String getMonthBefore(Date date,int month) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Calendar cl = Calendar.getInstance();
+    cl.setTime(date);
+    cl.add(Calendar.MONTH, -month);
+    date = cl.getTime();
+    return sdf.format(date);
+  }
 }

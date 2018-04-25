@@ -1,7 +1,7 @@
 <#include "../common/layout.ftl"/>
 <@html page_title="${username}个人主页" page_tab="user">
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-12">
 
   <#--user info-->
     <@current_user_tag username=username>
@@ -12,11 +12,13 @@
               <img src="${currentUser.avatar}" class="avatar-lg" alt=""/>
             </div>
             <div class="media-body">
-              <h3 style="margin-top: 0">${currentUser.username!}</h3>
+              <h3 style="margin-top: 0">${currentUser.realName!}</h3>
               <p>积分：<a href="/top100">${currentUser.score!0}</a></p>
               <#if currentUser.bio??>
                 <p><i class="gray">${currentUser.bio!}</i></p>
               </#if>
+                <div>联系电话: ${currentUser.phone!}</div>
+                <div>QQ: <a href="http://wpa.qq.com/msgrd?v=3&uin=${currentUser.qq!}&site=qq&menu=yes">${currentUser.qq!}</a></div>
               <div>收藏话题: <a href="/user/${currentUser.username}/collects">${collectCount!0}</a></div>
               <#if currentUser.url??>
                 <div>主页: <a href="${currentUser.url!?html}" target="_blank">${currentUser.url!?html}</a></div>

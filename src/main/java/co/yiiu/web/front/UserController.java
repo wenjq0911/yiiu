@@ -6,10 +6,12 @@ import co.yiiu.core.bean.Result;
 import co.yiiu.core.exception.ApiException;
 import co.yiiu.core.util.identicon.Identicon;
 import co.yiiu.core.util.security.Base64Helper;
+import co.yiiu.module.score.model.ScoreLog;
 import co.yiiu.module.score.service.ScoreLogService;
 import co.yiiu.module.user.model.User;
 import co.yiiu.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +54,7 @@ public class UserController extends BaseController {
   @GetMapping("/{username}")
   public String profile(@PathVariable String username, Model model) {
     model.addAttribute("username", username);
+    model.addAttribute("realName",getUser().getRealName());
     return "front/user/info";
   }
 
@@ -69,7 +72,7 @@ public class UserController extends BaseController {
   }
 
   /**
-   * 用户发布的所有评论
+   * 用户发布的所有回复
    *
    * @param username
    * @return
@@ -116,13 +119,15 @@ public class UserController extends BaseController {
    * @return
    */
   @PostMapping("/profile")
-  public String updateUserInfo(String email, String url, String bio, HttpServletResponse response) throws Exception {
+  public String updateUserInfo(String email, String url, String bio, String phone,String qq,HttpServletResponse response) throws Exception {
     User user = getUser();
     if (user.isBlock())
       throw new Exception("你的帐户已经被禁用，不能进行此项操作");
     user.setEmail(email);
     if (bio != null && bio.trim().length() > 0) user.setBio(bio);
     user.setUrl(url);
+    if (phone != null && phone.trim().length() > 0) user.setPhone(phone);
+    if (qq != null && qq.trim().length() > 0) user.setQq(qq);
     userService.save(user);
     return redirect(response, "/user/" + user.getUsername());
   }

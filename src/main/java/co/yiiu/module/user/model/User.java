@@ -1,11 +1,10 @@
 package co.yiiu.module.user.model;
 
 import co.yiiu.core.util.Constants;
+import co.yiiu.module.node.model.Node;
 import co.yiiu.module.security.model.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,8 +19,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "yiiu_user")
-@Getter
-@Setter
+
 public class User implements Serializable {
 
   /**
@@ -102,16 +100,217 @@ public class User implements Serializable {
   private Set<Role> roles = new HashSet<>();
 
   /**
-   * @OneToOne：一对一关联 cascade：级联,它可以有有五个值可选,分别是：
+   * @OneToOne：一对一关联
+   * cascade：级联,它可以有有五个值可选,分别是：
    * CascadeType.PERSIST：级联新建
    * CascadeType.REMOVE : 级联删除
    * CascadeType.REFRESH：级联刷新
    * CascadeType.MERGE  ： 级联更新
    * CascadeType.ALL    ： 以上全部四项
-   * @JoinColumn:主表外键字段 github_user_id：User所映射的表中的一个字段
+   * @JoinColumn:主表外键字段
+   * github_user_id：User所映射的表中的一个字段
    */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "github_user_id")
   private GithubUser githubUser;
 
+  // 用户与角色的关联关系
+  @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+  @JoinTable(
+          name = "yiiu_user_node",
+          joinColumns = {
+                  @JoinColumn(name = "user_id")
+          },
+          inverseJoinColumns = {
+                  @JoinColumn(name = "node_id")
+          }
+  )
+  @JsonIgnore
+  private Set<Node> nodes = new HashSet<>();
+  @Column(name = "real_name")
+  private String realName;
+
+  private String phone;
+  private String qq;
+
+  //审核是否被通过
+  private boolean checked;
+  //审核信息
+  public String checkMsg;
+
+  public boolean isChecked() {
+    return checked;
+  }
+
+  public void setChecked(boolean checked) {
+    this.checked = checked;
+  }
+
+  public String getCheckMsg() {
+    return checkMsg;
+  }
+
+  public void setCheckMsg(String checkMsg) {
+    this.checkMsg = checkMsg;
+  }
+
+  public GithubUser getGithubUser() {
+    return githubUser;
+  }
+
+  public void setGithubUser(GithubUser githubUser) {
+    this.githubUser = githubUser;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getAvatar() {
+    return avatar;
+  }
+
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getBio() {
+    return bio;
+  }
+
+  public void setBio(String bio) {
+    this.bio = bio;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public Date getInTime() {
+    return inTime;
+  }
+
+  public void setInTime(Date inTime) {
+    this.inTime = inTime;
+  }
+
+  public boolean isBlock() {
+    return block;
+  }
+
+  public void setBlock(boolean block) {
+    this.block = block;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  public int getScore() {
+    return score;
+  }
+
+  public void setScore(int score) {
+    this.score = score;
+  }
+
+  public int getAttempts() {
+    return attempts;
+  }
+
+  public void setAttempts(int attempts) {
+    this.attempts = attempts;
+  }
+
+  public Date getAttemptsTime() {
+    return attemptsTime;
+  }
+
+  public void setAttemptsTime(Date attemptsTime) {
+    this.attemptsTime = attemptsTime;
+  }
+
+  public long getSpaceSize() {
+    return spaceSize;
+  }
+
+  public void setSpaceSize(long spaceSize) {
+    this.spaceSize = spaceSize;
+  }
+
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+
+  public Set<Node> getNodes() {
+    return nodes;
+  }
+
+  public void setNodes(Set<Node> nodes) {
+    this.nodes = nodes;
+  }
+
+  public String getRealName() {
+    return realName;
+  }
+
+  public void setRealName(String realName) {
+    this.realName = realName;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
+  }
+
+  public String getQq() {
+    return qq;
+  }
+
+  public void setQq(String qq) {
+    this.qq = qq;
+  }
 }

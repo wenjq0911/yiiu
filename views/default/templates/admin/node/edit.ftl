@@ -1,5 +1,5 @@
 <#include "../common/layout.ftl"/>
-<@html page_tab="admin" page_title="编辑节点">
+<@html page_tab="admin" page_title="编辑模块">
 <div class="row">
   <div class="col-md-2 hidden-sm hidden-xs">
     <#include "../components/admin_left.ftl">
@@ -8,15 +8,15 @@
   <div class="col-md-10">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <a href="/">主页</a> / 编辑节点
+        <a href="/">主页</a> / 编辑模块
       </div>
       <div class="panel-body">
         <form action="/admin/node/${node.id!}/edit" method="post" id="nodeForm">
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
           <div class="form-group">
-            <label for="pid">父节点</label>
+            <label for="pid">业务系统</label>
             <select name="pid" id="pid" class="form-control">
-              <option value="0">父节点</option>
+              <option value="0">业务系统</option>
                 <#list pnodes as pnode>
                   <option value="${pnode.id!}"
                           <#if node.pid == pnode.id>selected</#if>>

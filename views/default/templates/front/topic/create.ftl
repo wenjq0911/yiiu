@@ -14,7 +14,7 @@
             <label for="title">标题</label>
             <div class="input-group">
               <span class="input-group-btn">
-                <a id="choiceNode" class="btn btn-default" onclick="javascript:;" data-toggle="modal" data-target="#choiceModal">${nodeName!"选择节点"}</a>
+                <a id="choiceNode" class="btn btn-default" onclick="javascript:;" data-toggle="modal" data-target="#choiceModal">${nodeName!"选择模块"}</a>
               </span>
               <input type="text" class="form-control" id="title" name="title" value="${title!}" placeholder="标题">
             </div>
@@ -45,14 +45,16 @@
     <div class="modal-content">
       <div class="modal-header">
         <button id="closeChoiceModalBtn" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">选择节点 <small> 没有找到相应的节点，那就选None吧，管理员看到了会处理的 :-)</small></h4>
+        <h4 class="modal-title" id="myModalLabel">选择模块 <small> 没有找到相应的模块，那就不用选啦，管理员看到了会处理的 :-)</small></h4>
       </div>
       <div class="modal-body">
         <@nodes_tag>
           <#list nodes as pnode>
             <div class="row" style="padding: 5px 0;">
               <div class="col-md-2">
-                <div class="text-right">${pnode.name!}</div>
+                <div class="text-right">
+                    ${pnode.name!}
+                </div>
               </div>
               <div class="col-md-10 nodes">
                 <#list pnode.list as node>
@@ -80,7 +82,7 @@
       var title = $("#title").val();
       var nodeId = $("#nodeId").val();
       if(nodeId.length === 0) {
-        error.html("请选择节点");
+        error.html("请选择模块");
         return false;
       }
       if(title.length === 0) {

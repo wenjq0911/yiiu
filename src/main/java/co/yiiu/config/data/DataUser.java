@@ -14,6 +14,17 @@ public class DataUser {
   private String bio;
   private String url;
   private String role;
+  private String realname;
+
+  public boolean isChecked() {
+    return checked;
+  }
+
+  public void setChecked(boolean checked) {
+    this.checked = checked;
+  }
+
+  public  boolean checked;
 
   public String getUsername() {
     return username;
@@ -69,5 +80,13 @@ public class DataUser {
 
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public String getRealname() {
+    return realname;
+  }
+
+  public void setRealname(String realname) {
+    this.realname = realname;
   }
 }

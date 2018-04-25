@@ -10,7 +10,7 @@
         </div>
         <div class="media-body">
           <div class="media-heading">
-            <a href="/user/${user.username!}">${user.username!}</a>
+            <a href="/user/${user.username!}">${user.realName!}</a>
             <div style="color: #7A7A7A; font-size: 12px; margin-top:5px;">
               <i>${(user.bio!"这家伙很懒，什么都没有留下")?html}</i>
             </div>

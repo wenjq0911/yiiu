@@ -1,8 +1,5 @@
 package co.yiiu.config.data;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
 /**
@@ -10,8 +7,6 @@ import java.util.List;
  * Copyright (c) 2016, All Rights Reserved.
  * https://yiiu.co
  */
-@Getter
-@Setter
 public class DataPermission {
 
   private String name;
@@ -19,4 +14,35 @@ public class DataPermission {
   private String url;
   private List<DataChildPermission> childs;
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public List<DataChildPermission> getChilds() {
+    return childs;
+  }
+
+  public void setChilds(List<DataChildPermission> childs) {
+    this.childs = childs;
+  }
 }

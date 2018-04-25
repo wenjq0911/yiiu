@@ -1,10 +1,10 @@
-<#include "./common/layout.ftl">
+<#include "./common/layout_nologin.ftl">
 <@html page_title="注册" page_tab="register">
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <a href="/">主页</a> / 注册
+        注册
       </div>
       <div class="panel-body">
         <form role="form" id="form" method="post">
@@ -15,9 +15,18 @@
                    placeholder="用户名,只能是2-16位的a-z,A-Z,0-9组合">
           </div>
           <div class="form-group">
+              <label for="realName">昵称</label>
+              <input type="text" class="form-control" id="realName" name="realName"
+                     placeholder="昵称,只能是2-4中文姓名">
+          </div>
+          <div class="form-group">
             <label for="password">密码</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="密码">
           </div>
+        <div class="form-group">
+            <label for="password">确认密码</label>
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="确认密码">
+        </div>
           <div class="form-group">
             <label for="email">邮箱</label>
             <div class="input-group">
@@ -30,6 +39,18 @@
           <div class="form-group">
             <label for="emailCode">邮箱验证码</label>
             <input type="text" class="form-control" id="emailCode" name="emailCode" placeholder="邮箱验证码">
+        </div>
+            <div class="form-group">
+                <label for="api_address">申请的业务系统</label>
+                <select class="form-control" id="select_node" >
+                      <#list nodes as m>
+                          <option value="${m.id}">${m.name}</option>
+                      </#list>
+                </select>
+            </div>
+          <div class="form-group">
+                <label for="nodes">注册描述</label>
+                <textarea class="form-control" name="desc" id="desc" placeholder="请输入描述信息，建议包含所在单位、真实姓名、职务、使用的业务系统名称和地址等信息，方便管理员审核。"></textarea>
           </div>
           <div class="form-group">
             <label for="code">验证码</label>
@@ -46,14 +67,14 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="panel panel-default">
-      <div class="panel-heading">社交帐号登录</div>
-      <div class="panel-body">
-        <a href="/github_login" class="btn btn-success btn-block">Github登录</a>
-      </div>
-    </div>
-  </div>
+  <#--<div class="col-md-3">-->
+    <#--<div class="panel panel-default">-->
+      <#--<div class="panel-heading">社交帐号登录</div>-->
+      <#--<div class="panel-body">-->
+        <#--<a href="/github_login" class="btn btn-success btn-block">Github登录</a>-->
+      <#--</div>-->
+    <#--</div>-->
+  <#--</div>-->
 </div>
 <script>
   $(function () {
@@ -63,6 +84,7 @@
       var email = $("#email").val();
       var emailCode = $("#emailCode").val();
       var code = $("#code").val();
+      var password2=$("#password2").val();
       if (username.length === 0) {
         $("#error_message").text("用户名不能为空");
         return false;
@@ -71,6 +93,10 @@
         $("#error_message").text("密码不能为空");
         return false;
       }
+        if (password2!=password) {
+            $("#error_message").text("两次密码不一致");
+            return false;
+        }
       if (email.length === 0) {
         $("#error_message").text("邮箱不能为空");
         return false;
@@ -97,11 +123,14 @@
           password: $("#password").val(),
           email: $("#email").val(),
           emailCode: $("#emailCode").val(),
-          code: $("#code").val()
+          code: $("#code").val(),
+            realName:$("#realName").val(),
+            desc:$("#desc").val(),
+            nodeid:$("#select_node").val()
         },
         success: function (data) {
           if (data.code === 200) {
-            location.href = "/login?s=reg";
+            location.href = "/registerok";
           } else {
             $("#error_message").text(data.description);
           }

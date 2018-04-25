@@ -1,10 +1,10 @@
 <#include "common/layout.ftl"/>
-<@html page_title="积分前100 - ${site.name!}">
+<@html page_title="活跃的用户 - ${site.name!}">
 <div class="row">
   <div class="col-md-9">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <a href="/">主页</a> / Top100 积分榜
+        <a href="/">主页</a> / 活跃用户榜
       </div>
 
       <@score_tag p=1 limit=100>
@@ -15,7 +15,7 @@
               <td rowspan="3" width="80">
                 <img src="${user.avatar}" class="avatar-lg" alt="">
               </td>
-              <td style="font-size: 20px;">${user_index + 1}. <a href="/user/${user.username}">${user.username}</a>
+              <td style="font-size: 20px;">${user_index + 1}. <a href="/user/${user.username}">${user.realName}</a>
               </td>
               <td rowspan="3" style="font-size: 30px; width:70px; text-align: center;">
                     <span class="label label-default"

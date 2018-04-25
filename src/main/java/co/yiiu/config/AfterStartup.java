@@ -2,6 +2,8 @@ package co.yiiu.config;
 
 import co.yiiu.config.data.DataConfig;
 import co.yiiu.config.data.DataUser;
+import co.yiiu.module.node.model.Node;
+import co.yiiu.module.node.service.NodeService;
 import co.yiiu.module.security.model.Permission;
 import co.yiiu.module.security.model.Role;
 import co.yiiu.module.security.service.PermissionService;
@@ -45,10 +47,13 @@ public class AfterStartup implements ApplicationListener<ContextRefreshedEvent> 
   @Autowired
   private DataConfig dataConfig;
 
+  @Autowired
+  private NodeService nodeService;
+
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
     System system = systemService.findByName("init");
-    if (system == null) {
+    if(system == null) {
       system = new System();
       system.setName("init");
       system.setValue("1");
@@ -56,7 +61,7 @@ public class AfterStartup implements ApplicationListener<ContextRefreshedEvent> 
 
       insert();
     } else {
-      if (system.getValue().equalsIgnoreCase("0")) {
+      if(system.getValue().equalsIgnoreCase("0")) {
         // 系统已经初始化过了，这里有人为修改过的
         // 添加你想要的处理
       }
@@ -121,7 +126,11 @@ public class AfterStartup implements ApplicationListener<ContextRefreshedEvent> 
     Set<Role> roles = new HashSet<>();
     roles.add(role);
     user.setRoles(roles);
+    user.setRealName(dataUser.getRealname());
+    user.setChecked(dataUser.isChecked());
     userService.save(user);
+
+
   }
 
 }

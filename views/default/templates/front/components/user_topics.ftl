@@ -1,7 +1,7 @@
 <#macro user_topics username p=1 limit=site.pageSize isPaginate=false isFooter=false>
   <@user_topics_tag username=username p=p limit=limit>
   <div class="panel panel-default">
-    <div class="panel-heading">${username}创建的话题</div>
+    <div class="panel-heading">${realName} 创建的话题</div>
     <#if page.getTotalElements() == 0>
       <div class="panel-body">
         暂无话题
@@ -26,9 +26,9 @@
               <p>
                 <a href="/go/${topic.node.value!}">${topic.node.name!}</a>
                 <span>•</span>
-                <span><a href="/user/${topic.user.username}">${topic.user.username}</a></span>
+                <span><a href="/user/${topic.user.username}">${topic.user.realName}</a></span>
                 <span class="hidden-sm hidden-xs">•</span>
-                <span class="hidden-sm hidden-xs"><a href="/topic/${topic.id!c}">${topic.commentCount!0}个评论</a></span>
+                <span class="hidden-sm hidden-xs"><a href="/topic/${topic.id!c}">${topic.replyCount!0}个回复</a></span>
                 <span class="hidden-sm hidden-xs">•</span>
                 <span class="hidden-sm hidden-xs">${topic.view!0}次浏览</span>
                 <span>•</span>

@@ -1,9 +1,9 @@
 package co.yiiu.module.topic.service;
 
 import co.yiiu.module.collect.service.CollectService;
-import co.yiiu.module.comment.service.CommentService;
 import co.yiiu.module.node.model.Node;
 import co.yiiu.module.notification.service.NotificationService;
+import co.yiiu.module.reply.service.ReplyService;
 import co.yiiu.module.topic.model.Topic;
 import co.yiiu.module.topic.repository.TopicRepository;
 import co.yiiu.module.user.model.User;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by tomoya.
@@ -34,7 +35,7 @@ public class TopicService {
   @Autowired
   private TopicRepository topicRepository;
   @Autowired
-  private CommentService commentService;
+  private ReplyService replyService;
   @Autowired
   private CollectService collectService;
   @Autowired
@@ -74,8 +75,8 @@ public class TopicService {
       collectService.deleteByTopic(topic);
       //删除通知里提到的话题
       notificationService.deleteByTopic(topic);
-      //删除话题下面的评论
-      commentService.deleteByTopic(topic);
+      //删除话题下面的回复
+      replyService.deleteByTopic(topic);
 
       //删除话题
       topicRepository.delete(topic);
@@ -100,23 +101,23 @@ public class TopicService {
    * @return
    */
   @Cacheable
-  public Page<Topic> page(int p, int size, String tab) {
+  public Page<Topic> page(int p, int size, String tab, List<Node> nodes) {
     Sort sort = new Sort(
         new Sort.Order(Sort.Direction.DESC, "top"),
         new Sort.Order(Sort.Direction.DESC, "inTime"),
-        new Sort.Order(Sort.Direction.DESC, "lastCommentTime"));
+        new Sort.Order(Sort.Direction.DESC, "lastReplyTime"));
     Pageable pageable = new PageRequest(p - 1, size, sort);
     switch (tab) {
       case "default":
-        return topicRepository.findAll(pageable);
+        return topicRepository.findAllByNodeIsIn(nodes,pageable);
       case "good":
-        return topicRepository.findByGood(true, pageable);
+        return topicRepository.findAllByGoodAndNodeIsIn(true,nodes, pageable);
       case "newest":
         sort = new Sort(new Sort.Order(Sort.Direction.DESC, "inTime"));
         pageable = new PageRequest(p - 1, size, sort);
-        return topicRepository.findAll(pageable);
+        return topicRepository.findAllByNodeIsIn(nodes,pageable);
       case "noanswer":
-        return topicRepository.findByCommentCount(0, pageable);
+        return topicRepository.findByReplyCountAndNodeIsIn(0,nodes, pageable);
       default:
         return null;
     }
@@ -185,9 +186,17 @@ public class TopicService {
     Pageable pageable = new PageRequest(p - 1, size, sort);
     return topicRepository.findByNode(node, pageable);
   }
-
-  //查询节点下有多少话题数
+  @Cacheable
+  public Page<Topic> findByNodes(List<Node> nodes, int p, int size) {
+    Sort sort = new Sort(
+            new Sort.Order(Sort.Direction.DESC, "top"),
+            new Sort.Order(Sort.Direction.DESC, "inTime"));
+    Pageable pageable = new PageRequest(p - 1, size, sort);
+    return topicRepository.findByNodeIsIn(nodes, pageable);
+  }
+  //查询模块下有多少话题数
   public long countByNode(Node node) {
     return topicRepository.countByNode(node);
   }
+
 }

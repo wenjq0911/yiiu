@@ -34,6 +34,7 @@ public class BaseEntity {
   @Autowired
   private NodeService nodeService;
 
+
   private static final long MINUTE = 60 * 1000;
   private static final long HOUR = 60 * MINUTE;
   private static final long DAY = 24 * HOUR;
@@ -91,12 +92,13 @@ public class BaseEntity {
           users.add(user);
         }
       });
-      for (String user : users) {
+      /*for (String user : users) {
         user = user.trim();
         content = content.replace(user, "[" + user + "](" + siteConfig.getBaseUrl() + "user/" + user.replace("@", "") + ")");
-      }
+      }*/
     }
     // markdown 转 html 并返回
+    String aaa = MarkdownUtil.render(content);
     String clearContent = Jsoup.clean(
         MarkdownUtil.render(content),
         Whitelist
@@ -117,7 +119,7 @@ public class BaseEntity {
           element.parent().addClass("embed-responsive embed-responsive-16by9");
           element.parent().append("<iframe class='embedded_video' src='" + href.replace("watch?v=", "embed/") + "' frameborder='0' allowfullscreen></iframe>");
           element.remove();
-        } else if (href.contains("http://v.youku.com/v_show/")) {
+        } else if(href.contains("http://v.youku.com/v_show/")) {
           try {
             URL aUrl = new URL(href);
             String _href = "http://player.youku.com/embed/" + aUrl.getPath().replace("/v_show/id_", "").replace(".html", "");

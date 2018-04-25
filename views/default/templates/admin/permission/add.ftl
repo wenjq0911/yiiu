@@ -15,9 +15,9 @@
           <form action="/admin/permission/add" method="post" id="permissionForm">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="form-group">
-              <label for="pid">父节点</label>
+              <label for="pid">业务系统</label>
               <select name="pid" id="pid" class="form-control">
-                <option value="0">添加父节点</option>
+                <option value="0">添加业务系统</option>
                 <#list permissions as permission>
                   <option value="${permission.id!}"
                           <#if pid?? && pid == permission.id>selected</#if>>

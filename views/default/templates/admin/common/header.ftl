@@ -30,7 +30,7 @@
           </li>
           <li <#if page_tab == 'user'> class="active" </#if>>
             <a href="/user/${sec.getPrincipal()!}">
-              ${sec.getPrincipal()!}
+              ${sec.getUserName()!}
               <span class="badge" id="badge"></span>
             </a>
           </li>

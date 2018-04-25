@@ -1,43 +1,28 @@
-> 本项目是从 [pybbs](https://github.com/tomoya92/pybbs) fork 过来的
+> 项目是从 [yiiu](https://github.com/yiiu-co/yiiu) fork，使用的版本为2.7
 > 
-> 使用说明：请保留页面底部的 *powered by yiiu.co* 感谢支持
+> 感谢yiiu项目的贡献
 
-在线地址: [yiiu.co](https://yiiu.co)
+## 初衷
 
-## 技术栈
-
-- JDK8
-- Spring-Boot1.5.8
-- Spring-Security
-- Spring-JPA
-- Hibernate-Search5.8.0
-- Freemarker
-- Sqlite(或MySQL)
-- Bootstrap3
-- Ehcache
-
-*呃，就是spring全家桶*
+以项目或者主要是项目的小企业在项目上线、培训、运维时候通常会依赖现场培训、QQ群、微信群等，此项目主要希望通过在线帮助社区的方式解决项目后期更新版本手册或者处理日常非紧急性的问题。
 
 ## 特性
 
-- 社区兼容性（IE9+）
-- 页面自适应布局
-- 本地登录，注册
-- 登录时有验证码，尝试登录次数的限制
-- 使用 `Spring-Boot` 开发
-- 权限使用 `Spring-Security` ，基于url做的权限方便配置管理
-- 使用的 `Spring-JPA` 操作数据存储
-- 使用 `Hibernate-Search` 做数据检索，支持中文分词和结果关键字高亮
-- 自己实现了一个Markdown编辑器, 附带菜单，书写方便, 还支持拖拽图片上传
+在yiiu2.7项目的基础，修改或增加了以下内容：
 
-待完成的功能 *如果有你折腾过的，欢迎提pr，先谢过了:-)* 
+- 用户信息增加了电话、QQ，区分了账户和昵称，并修改前端展示为昵称而非账户，关联修改了注册、用户添加等页面。
+- 用户管理页面添加了业务系统的筛选，增加了从接口导入用户。
+- 去除了第三方登录的功能
+- 登录页面去除了统计信息，增加了宣传图片展示
+- 注册完成后需要审核，增加了注册审核页面。增加注册完成页面。
+- 增加了用户业务系统权限配置（业务使用使用原模块代替），关联修改了所有话题查询页面权限的筛选。
+- 积分修改为了活跃度（前端展示的修改）
+- QQ号码点击调用QQ
+- 后台仪表盘增加了热度分布、业务系统话题分布、访问趋势图表。
 
-- [ ] 权限修改后实现热更新，不用重新登录就可以生效
-- [ ] 第三方登录成功后记住我
-- [ ] 制作Docker镜像
-- [X] 登录记住我 感谢@beldon
-- [X] 第三方登录集成，集成Github登录
 
+
+# 以下是yiiu原文（打包运行、配置及相关异常处理）
 ## 快速开始
 
 *数据库里的表是项目启动时自动创建的，不要再问创建表的脚本在哪了*
@@ -46,7 +31,7 @@
 - `git clone https://github.com/yiiu-co/yiiu`
 - 运行 `mvn spring-boot:run` 启动项目 (这一步系统会自动把表创建好)
 - 访问 `http://localhost:8080`
-- 登录用户名：tomoya 密码：123123 (权限是超级管理员)
+- 登录用户名：admin 密码：123456 (权限是超级管理员)
 
 ## 打包部署开发环境
 
@@ -122,12 +107,6 @@ init_connect='SET NAMES utf8mb4'
 </dependency>
 ```
 
-## 关于主题
-
-本项目配置的结构目录非常方便主题开发，如果你想适配一套自己喜欢的主题，可以按照 `views` 目录下的文件夹结构开发，然后修改一下配置文件里的 `site.theme` 的值即可打包部署了
-
-后续我也会适配一些好看的主题放到组织 `yiiu-co` 里
-
 ## 配置邮箱
 
 我只配置了QQ邮箱，按照下面配置方法配置是没有问题的
@@ -144,30 +123,3 @@ mail:
     mail.smtp.starttls.enable: true
     mail.smtp.starttls.required: true
 ```
-
-## 反馈
-
-[issues](https://github.com/yiiu-co/yiiu/issues)
-
-QQ群：`419343003`
-
-*提问题的时候请将问题重现步骤描述清楚*
-
-## 其它版本
-
-- golang版：https://github.com/tomoya92/pybbs-go
-- springboot版：https://github.com/yiiu-co/yiiu
-- jfinal版：https://github.com/tomoya92/pybbs/tree/v2.3
-- ssm版：https://github.com/ehuacui/ehuacui-bbs
-
-## 贡献
-
-欢迎大家提 issues 及 pr 
-
-感谢以下朋友的pr
-
-[@beldon](https://github.com/beldon) [@Teddy-Zhu](https://github.com/Teddy-Zhu)
-
-## License
-
-MIT

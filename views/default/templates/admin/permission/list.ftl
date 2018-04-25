@@ -50,7 +50,7 @@
       </div>
       <div class="col-md-2">
         <div class="panel panel-default">
-          <div class="panel-heading">父节点</div>
+          <div class="panel-heading">业务系统</div>
           <div class="list-group">
             <#list permissions as permission>
               <li class="list-group-item permission-item <#if pid?? && pid == permission.id>active</#if>">

@@ -25,7 +25,7 @@
                 <#if sec.allGranted("role:edit")>
                   <a href="/admin/role/${role.id}/edit" class="btn btn-xs btn-warning">配置权限</a>
                 </#if>
-                <#if sec.allGranted("role:delete")>
+                <#if sec.allGranted("role:delete") && role.name!="admin">
                   <a href="javascript:if(confirm('确认删除吗?')) location.href='/admin/role/${role.id}/delete'"
                      class="btn btn-xs btn-danger">删除</a>
                 </#if>

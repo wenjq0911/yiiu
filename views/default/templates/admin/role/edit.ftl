@@ -13,7 +13,7 @@
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
           <div class="form-group">
             <label for="name">角色名称</label>
-            <input type="text" id="name" name="name" value="${role.name!}" class="form-control"/>
+            <input type="text" id="name" name="name" value="${role.name!}" class="form-control" <#if role.name=="admin">readonly</#if>/>
           </div>
           <div class="form-group">
             <label for="description">角色描述</label>
@@ -27,7 +27,7 @@
                 <h4><b>${l.permission.description!}</b></h4>
                 <#list l.childPermissions as childPermission>
                   <input type="checkbox" name="permissionIds" value="${childPermission.id}"
-                         id="permission_${childPermission.id}">
+                         id="permission_${childPermission.id}" <#if role.name=="admin">onclick="return false"</#if>>
                   <label for="permission_${childPermission.id}">${childPermission.description!}</label>&nbsp;
                 </#list>
               </#list>

@@ -81,6 +81,7 @@ public class TopicController extends BaseController {
     model.addAttribute("collect", collectService.findByUserAndTopic(getUser(), topic));
     // 查询这个话题被收藏的个数
     model.addAttribute("collectCount", collectService.countByTopic(topic));
+    model.addAttribute("basePath",siteConfig.getBaseUrl());
     return "/front/topic/detail";
   }
 
@@ -135,7 +136,7 @@ public class TopicController extends BaseController {
     if (StringUtils.isEmpty(title)) {
       errorMessage = "请输入标题";
     } else if (node == null) {
-      errorMessage = "节点不存在";
+      errorMessage = "模块不存在";
     } else if (!StringUtils.isEmpty(url) && !url.contains("http://") && !url.contains("https://")) {
       errorMessage = "转载URL格式不正确";
     } else {
@@ -179,7 +180,7 @@ public class TopicController extends BaseController {
       //endregion 记录积分log
 
 
-      //节点的话题数加一
+      //模块的话题数加一
       nodeService.dealTopicCount(node, 1);
 
       return redirect(response, "/topic/" + topic.getId());

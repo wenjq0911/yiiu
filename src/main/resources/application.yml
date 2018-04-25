@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   application:
-    name: YIIU
+    name: HRLPER
     index: 1
   resources:
     static-locations:
@@ -15,16 +15,16 @@ spring:
     cache: false
     settings:
       template_exception_handler: rethrow
-  datasource:
-    driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:./yiiu.sqlite
 #  datasource:
-#    url: jdbc:mysql://localhost/yiiu?useSSL=false&characterEncoding=utf8
-#    username: root
-#    password: 123123
+#    driver-class-name: org.sqlite.JDBC
+#    url: jdbc:sqlite:./yiiu.sqlite
+  datasource:
+    url: jdbc:mysql://localhost/yiiu?useSSL=false&characterEncoding=utf8
+    username: root
+    password: 123456
   jpa:
-#    database: mysql
-    database-platform: co.yiiu.core.dialect.SQLiteDialect
+    database: mysql
+#    database-platform: co.yiiu.core.dialect.SQLiteDialect
     show-sql: true
     hibernate:
       ddl-auto: update
@@ -39,8 +39,8 @@ spring:
       enabled: false
   mail:
     host: smtp.qq.com
-    username: xxoo@qq.com
-    password: # 这里的密码是QQ邮箱的授权码
+    username: xx@qq.com
+    password:   # 这里的密码是QQ邮箱的授权码
     port: 465
     properties:
       mail.smtp.auth: true
@@ -66,8 +66,8 @@ security:
       login-path: /github_login
 
 site:
-  name: YIIU
-  intro: <h5>属于Java语言的bbs</h5><p>在这里，您可以提问，回答，分享，诉说，这是个属于Java程序员的社区，欢迎您的加入！</p>
+  name: 帮助社区
+  intro: <h5>运维服务社区</h5><p>在这里，您可以提问，回答，分享您在业务系统使用中的问题、感受、建议等！</p>
   baseUrl: http://localhost:8080/ # 不要忘了后面的 '/'
   staticUrl: http://localhost:8080/static/images/upload/
   pageSize: 20
@@ -76,11 +76,11 @@ site:
   search: true
   attempts: 5
   attemptsWaitTime: 15
-  maxCreateTopic: 10
-  createTopicScore: -10  # 创建主题变化的积分
-  createCommentScore : -5  # 创建评论变化的积分
+  maxCreateTopic: 99999
+  createTopicScore: 5  # 创建主题变化的积分
+  createReplyScore : 1  # 创建回复变化的积分
   userUploadSpaceSize: 50 # 单位MB
-  score: 2000 # 用户注册后初始积分
+  score: 0 # 用户注册后初始积分
   loginPoints: 2 # 登录点，最多2个位置登录，第三个登录点会覆盖第一个
   GA: #Google Analytics ID
   googleZZ: # google站长meta标签content值
@@ -98,7 +98,7 @@ site:
     content: |
           <p>您好</p>
           <p>&nbsp;&nbsp;您的验证码为 <span style='color: red;'>${genCode}</span> , 请在10分钟内使用！</p><br>
-          <small>本邮件为系统发出，请不要评论</small>
+          <small>本邮件为系统发出，请不要回复</small>
   illegalUsername:
   - profile
   - changeAvatar
@@ -107,10 +107,21 @@ site:
   - refreshToken
   - space
   - scoreLog
-
+  defaultPwd: 123456 #默认的密码
+  check: # 注册审核的邮件回复信息
+    subject: 注册申请回复 - ${site.name}
+    contentok: |
+          <p>您好</p>
+          <p>&nbsp;&nbsp;您申请注册名为：${account} 的账户通过审核了，您牢记密码。 </p><br>
+          <small>本邮件为系统发出，请不要回复</small>
+    contentno: |
+              <p>您好</p>
+              <p>&nbsp;&nbsp;您申请注册名为：${account} 的账户被拒绝了, 如有疑问请联系管理员。</p><br>
+              <p>&nbsp;&nbsp;联系方式：${adminname}：${phone} </p><br>
+              <small>本邮件为系统发出，请不要回复</small>
 score:
   template:
     dailySign: 每日签到获得${scoreLog.changeScore}积分
-    createTopic: 发表主题[<a href="/topic/${topic.id?c}" target="_blank">${topic.title?html}</a>],扣减${scoreLog.changeScore}积分
-    commentTopic: 评论主题[<a href="/topic/${topic.id?c}"  target="_blank">${topic.title?html}</a>],扣减${scoreLog.changeScore}积分
+    createTopic: 发表主题[<a href="/topic/${topic.id?c}" target="_blank">${topic.title?html}</a>],增加${scoreLog.changeScore}积分
+    replyTopic: 回复主题[<a href="/topic/${topic.id?c}"  target="_blank">${topic.title?html}</a>],增加${scoreLog.changeScore}积分
     register: 用户注册奖励${scoreLog.changeScore}积分

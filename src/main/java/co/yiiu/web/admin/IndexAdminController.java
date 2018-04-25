@@ -1,6 +1,7 @@
 package co.yiiu.web.admin;
 
 import co.yiiu.core.base.BaseController;
+import co.yiiu.module.node.service.NodeService;
 import co.yiiu.module.topic.service.TopicSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tomoya.
@@ -22,6 +27,8 @@ public class IndexAdminController extends BaseController {
   @Autowired
   private TopicSearch topicSearch;
 
+  @Autowired
+  private NodeService nodeService;
   /**
    * 首页
    *
@@ -31,6 +38,7 @@ public class IndexAdminController extends BaseController {
   public String index() {
     return "admin/index";
   }
+
 
   /**
    * 索引首页

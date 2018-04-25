@@ -2,7 +2,10 @@ package co.yiiu.web.admin;
 
 import co.yiiu.core.base.BaseController;
 import co.yiiu.module.security.model.Permission;
+import co.yiiu.module.security.model.Role;
 import co.yiiu.module.security.service.PermissionService;
+import co.yiiu.module.security.service.RoleService;
+import co.yiiu.module.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +28,8 @@ public class PermissionAdminController extends BaseController {
   @Autowired
   private PermissionService permissionService;
 
+  @Autowired
+  private RoleService roleService;
   /**
    * 角色列表
    *
@@ -74,6 +79,9 @@ public class PermissionAdminController extends BaseController {
     permission.setUrl(url);
     permission.setPid(pid == null ? 0 : pid);
     permissionService.save(permission);
+    Role role = roleService.findByName("admin");
+    role.getPermissions().add(permission);
+    roleService.save(role);
     return redirect(response, "/admin/permission/list?pid=" + pid);
   }
 

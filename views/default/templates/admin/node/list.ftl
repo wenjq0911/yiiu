@@ -1,5 +1,5 @@
 <#include "../common/layout.ftl"/>
-<@html page_tab="admin" page_title="节点管理">
+<@html page_tab="admin" page_title="模块管理">
 <div class="row">
   <div class="col-md-2 hidden-sm hidden-xs">
     <#include "../components/admin_left.ftl">
@@ -10,8 +10,8 @@
       <div class="col-md-9">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <a href="/">主页</a> / 节点列表
-            <span class="pull-right"><a href="/admin/node/add?pid=${pid!}">添加节点</a></span>
+            <a href="/">主页</a> / 模块列表
+            <span class="pull-right"><a href="/admin/node/add?pid=${pid!}">添加模块</a></span>
           </div>
           <div class="table-responsive">
             <table class="table table-striped">
@@ -44,9 +44,9 @@
       <div class="col-md-3">
         <div class="panel panel-default">
           <div class="panel-heading">
-            父节点
+            业务系统
             <span class="pull-right">
-              <a href="javascript:if(confirm('确定要校正各个节点的话题数吗？')) location.href='/admin/node/correction'">
+              <a href="javascript:if(confirm('确定要校正各个模块的话题数吗？')) location.href='/admin/node/correction'">
                 校正话题数
               </a>
             </span>

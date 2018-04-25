@@ -2,8 +2,6 @@ package co.yiiu.module.attendance.model;
 
 import co.yiiu.module.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,8 +12,6 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "yiiu_attendance")
-@Getter
-@Setter
 public class Attendance implements Serializable {
 
   @Id
@@ -32,4 +28,35 @@ public class Attendance implements Serializable {
   @Column(name = "in_time")
   private Date inTime;
 
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public int getScore() {
+    return score;
+  }
+
+  public void setScore(int score) {
+    this.score = score;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public Date getInTime() {
+    return inTime;
+  }
+
+  public void setInTime(Date inTime) {
+    this.inTime = inTime;
+  }
 }

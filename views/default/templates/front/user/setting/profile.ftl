@@ -16,13 +16,26 @@
         <form action="/user/profile" method="post" id="userProfileForm" enctype="multipart/form-data">
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
           <div class="form-group">
-            <label for="username">昵称</label>
+            <label for="username">账户</label>
             <input type="text" disabled class="form-control" id="username" value="${user.username}"/>
           </div>
+            <div class="form-group">
+                <label for="realName">昵称</label>
+                <input type="text" class="form-control" id="realName" value="${user.realName}"/>
+            </div>
+            <div class="form-group">
+                <label for="phone">电话</label>
+                <input type="text" class="form-control" id="phone" name="phone" value="${user.phone!}"/>
+            </div>
           <div class="form-group">
             <label for="email">邮箱</label>
             <input type="text" class="form-control" id="email" name="email" value="${user.email!?html}"/>
           </div>
+
+            <div class="form-group">
+                <label for="qq">QQ</label>
+                <input type="text" class="form-control" id="qq" name="qq" value="${user.qq!}"/>
+            </div>
           <div class="form-group">
             <label for="url">个人主页</label>
             <input type="text" class="form-control" id="url" name="url" value="${user.url!?html}"/>

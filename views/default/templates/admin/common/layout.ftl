@@ -42,6 +42,7 @@
 
   <script src="/static/js/jquery.min.js"></script>
   <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/static/js/echarts.min.js"></script>
   <script>
     $(function () {
       var n = $("#goTop");

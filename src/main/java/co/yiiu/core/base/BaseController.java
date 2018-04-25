@@ -1,5 +1,7 @@
 package co.yiiu.core.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import co.yiiu.config.SiteConfig;
 import co.yiiu.module.user.model.User;
 import co.yiiu.module.user.service.UserService;
@@ -23,6 +25,8 @@ public class BaseController {
   private SiteConfig siteConfig;
   @Autowired
   private UserService userService;
+
+  protected final static Logger logger = LoggerFactory.getLogger(BaseController.class);
 
   /**
    * 带参重定向

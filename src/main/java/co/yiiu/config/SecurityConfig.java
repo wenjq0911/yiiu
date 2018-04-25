@@ -25,7 +25,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * https://yiiu.co
  */
 @Configuration
-@EnableOAuth2Sso
+//@EnableOAuth2Sso
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -51,13 +51,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/topic/create",
             "/topic/*/delete",
             "/topic/*/edit",
-            "/comment/save",
-            "/comment/*/delete",
-            "/comment/*/edit",
-            "/comment/*/up",
-            "/comment/*/cancelUp",
-            "/comment/*/down",
-            "/comment/*/cancelDown",
+            "/reply/save",
+            "/reply/*/delete",
+            "/reply/*/edit",
+            "/reply/*/up",
+            "/reply/*/cancelUp",
+            "/reply/*/down",
+            "/reply/*/cancelDown",
             "/collect/**",
             "/notification/**",
             "/user/profile",
@@ -66,7 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/user/accessToken",
             "/user/refreshToken",
             "/user/space",
-            "/space/deleteFile"
+            "/space/deleteFile",
+             "/",
+                "/user/**"
         )
         .authenticated();
 
@@ -84,10 +86,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .logoutSuccessUrl("/")
         .deleteCookies("JSESSIONID", "remember-me");
 
-    http.addFilterBefore(yiiuFilterSecurityInterceptor, FilterSecurityInterceptor.class);
+    http.addFilterBefore(yiiuFilterSecurityInterceptor, FilterSecurityInterceptor.class).csrf().disable();
     http.addFilterBefore(validateCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-    http.csrf().ignoringAntMatchers("/common/upload", "/user/space/deleteFile", "/github_login", "/favicon.ico");
+    http.csrf().ignoringAntMatchers("/common/upload", "/user/space/deleteFile",  "/favicon.ico");
 
   }
 

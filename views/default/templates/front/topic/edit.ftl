@@ -55,7 +55,7 @@
       <div class="modal-header">
         <button id="closeChoiceModalBtn" type="button" class="close" data-dismiss="modal" aria-label="Close"><span
             aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">选择节点 <small> 没有找到相应的节点，那就选None吧，管理员看到了会处理的 :-)</small></h4>
+        <h4 class="modal-title" id="myModalLabel">选择模块 <small> 没有找到相应的模块，那就不用选啦，管理员看到了会处理的 :-)</small></h4>
       </div>
       <div class="modal-body">
         <@nodes_tag>
@@ -90,7 +90,7 @@
       var title = $("#title").val();
       var nodeId = $("#nodeId").val();
       if (nodeId.length === 0) {
-        error.html("请选择节点");
+        error.html("请选择模块");
         return false;
       }
       if (title.length === 0) {

@@ -1,7 +1,9 @@
 package co.yiiu.module.security.service;
 
 import co.yiiu.module.security.model.Permission;
+import co.yiiu.module.security.model.Role;
 import co.yiiu.module.security.repository.PermissionRepository;
+import co.yiiu.module.security.repository.RoleRepository;
 import co.yiiu.module.user.model.User;
 import co.yiiu.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class PermissionService {
   private PermissionRepository permissionRepository;
   @Autowired
   private UserService userService;
+  @Autowired
+  private RoleRepository roleRepository;
 
   public Permission findByName(String name) {
     return permissionRepository.findByName(name);
@@ -109,7 +113,11 @@ public class PermissionService {
    */
   @CacheEvict(allEntries = true)
   public void deleteById(Integer id) {
+    //去除admin的使用
+    Role role = roleRepository.findByName("admin");
     Permission permission = findById(id);
+    role.getPermissions().remove(permission);
+    roleRepository.save(role);
     if (permission.getPid() == 0) {
       permissionRepository.deleteByPid(permission.getId());
     }
